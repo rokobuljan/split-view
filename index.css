@@ -1,0 +1,40 @@
+* {
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.flex {
+    background: #ddd;
+    display: flex;
+    overflow: hidden;
+}
+
+.flex.h {
+    flex-direction: row;
+}
+
+.flex.v {
+    flex-direction: column;
+}
+
+.flex-item {
+    overflow: auto;
+}
+
+.flex > .splitter {
+    flex: 0 0 10px;
+    /* background: white; */
+    background-color: #aaa;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.flex.h > .splitter {
+    cursor: ew-resize;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='30'><path d='M2 0 v30 M5 0 v30 M8 0 v30' fill='none' stroke='black'/></svg>");
+}
+
+.flex.v > .splitter {
+    cursor: ns-resize;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='30' height='10'><path d='M0 2 h30 M0 5 h30 M0 8 h30' fill='none' stroke='black'/></svg>");
+}
