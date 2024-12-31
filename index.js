@@ -1,69 +1,41 @@
-function manageResize(ev, sizeProp, posProp) {
-    const elTarget = ev.target;
+const getGrow = (el) => Number(el.style.getPropertyValue("--grow") || getComputedStyle(el).getPropertyValue("--grow"));
 
-    var prev = elTarget.previousElementSibling;
-    var next = elTarget.nextElementSibling;
+const splitViewStart = (ev) => {
+    const SIZE_MIN = 100;
+    const elSplitter = ev.target.closest(".splitter");
+    const elPrev = elSplitter?.previousElementSibling;
+    const elNext = elSplitter?.nextElementSibling;
 
-    if (!prev || !next) {
-        return;
-    }
-
+    if (!elSplitter || !elPrev || !elNext) return;
     ev.preventDefault();
 
-    var prevSize = prev[sizeProp];
-    var nextSize = next[sizeProp];
-    var sumSize = prevSize + nextSize;
-    var prevGrow = Number(prev.style.flexGrow);
-    var nextGrow = Number(next.style.flexGrow);
-    var sumGrow = prevGrow + nextGrow;
-    var lastPos = ev[posProp];
+    elSplitter.setPointerCapture(ev.pointerId);
+    const isCol = elSplitter.closest(".view").matches(".col");
+    const offset = isCol ? "offsetHeight" : "offsetWidth";
+    const clientXY = isCol ? "clientY" : "clientX";
+    const growSum = getGrow(elPrev) + getGrow(elNext);
+    const clientXYStart = ev[clientXY];
+    const sizePrev = elPrev[offset];
+    const sizeNext = elNext[offset];
+    const sizeSum = sizePrev + sizeNext;
+    const sizeMinPrev = Number(elPrev.style.getPropertyValue("--min") || SIZE_MIN);
+    const sizeMinNext = Number(elNext.style.getPropertyValue("--min") || SIZE_MIN);
 
-    function onMouseMove(mm) {
-        var pos = mm[posProp];
-        var d = pos - lastPos;
-        prevSize += d;
-        nextSize -= d;
-        if (prevSize < 0) {
-            nextSize += prevSize;
-            pos -= prevSize;
-            prevSize = 0;
-        }
-        if (nextSize < 0) {
-            prevSize += nextSize;
-            pos += nextSize;
-            nextSize = 0;
-        }
+    const splitViewMove = (ev) => {
+        const posDiff = ev[clientXY] - clientXYStart;
+        const sizePrevNew =  Math.max(sizeMinPrev, Math.min(sizeSum - sizeMinNext, sizePrev + posDiff)); 
+        const sizeNextNew =  Math.max(sizeMinNext, Math.min(sizeSum - sizeMinPrev, sizeNext - posDiff));
+        elPrev.style.setProperty("--grow", growSum * sizePrevNew / sizeSum);
+        elNext.style.setProperty("--grow", growSum * sizeNextNew / sizeSum);
+    };
 
-        var prevGrowNew = sumGrow * (prevSize / sumSize);
-        var nextGrowNew = sumGrow * (nextSize / sumSize);
+    const splitViewEnd = () => {
+        removeEventListener("pointermove", splitViewMove);
+        removeEventListener("pointerup", splitViewEnd);
+    };
 
-        prev.style.flexGrow = prevGrowNew;
-        next.style.flexGrow = nextGrowNew;
-
-        lastPos = pos;
-    }
-
-    function onMouseUp() {
-        removeEventListener("mousemove", onMouseMove);
-        removeEventListener("mouseup", onMouseUp);
-    }
-
-    addEventListener("mousemove", onMouseMove);
-    addEventListener("mouseup", onMouseUp);
+    addEventListener("pointermove", splitViewMove);
+    addEventListener("pointerup", splitViewEnd);
 }
 
-function setupResizerEvents() {
-    document.body.addEventListener("mousedown", function (ev) {
-        const elSplitter = ev.target.closest(".splitter");
-        if (!elSplitter) return;
-        const elView = elSplitter.closest(".flex");
-        const isHorizontal = elView.matches(".h");
-        if (isHorizontal) {
-            manageResize(ev, "offsetWidth", "pageX");
-        } else {
-            manageResize(ev, "offsetHeight", "pageY");
-        }
-    });
-}
-
-setupResizerEvents();
+addEventListener("pointerdown", splitViewStart);

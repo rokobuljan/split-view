@@ -11,26 +11,31 @@
 </head>
 
 <body>
-    <nav>Resizable grid example</nav>
-    <div class="flex v" style="flex: 1; height: 500px;">
-        <div class="flex-item" style="flex: 1;">Flex 1</div>
+    
+    <div class="view col">
+        <div class="view"><h1>Split Views</h1></div>
         <div class="splitter"></div>
-        <div class="flex h" style="flex: 1;">
-            <div class="flex-item" style="flex: 1; background-color: aqua;">Flex 2</div>
+        <div class="view">
+            <div class="view">View 2</div>
             <div class="splitter"></div>
-            <div class="flex v" style="flex: 2; ">
-                <div class="flex-item" style="flex: 1; background: pink;">Flex 3</div>
+            <div class="view col" style="--grow:3;">
+                <div class="view">
+                    <div class="view">View 4</div>
+                    <div class="splitter"></div>
+                    <div class="view">View 5</div>
+                </div>
                 <div class="splitter"></div>
-                <div class="flex h" style="flex: 1">
-                    <div class="flex-item" style="flex: 1; background: green;">Flex 4</div>
+                <div class="view">
+                    <div class="view" style="--min:200;--max:280;">View 6</div>
                     <div class="splitter"></div>
-                    <div class="flex-item" style="flex: 2;">Flex 5</div>
+                    <div class="view" style="--grow:3;">View 7</div>
                     <div class="splitter"></div>
-                    <div class="flex-item" style="flex: 3; background: darkorange;">Flex 6</div>
+                    <div class="view" style="--grow:2;">View 8</div>
                 </div>
             </div>
         </div>
     </div>
+
 </body>
 
 </html>
