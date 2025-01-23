@@ -24,6 +24,12 @@ body {
         cursor: ew-resize;
         transition: background-color 0.24s;
         background-color: #aaa;
+
+        /* Remove splitter if not followed by a view */
+        &:not(:has(+.view)) {
+            display: none;
+        }
+
         &:hover {
             background-color: #0bf;
         }
