@@ -1,0 +1,11 @@
+* {
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font: 1em/1.4 system-ui, sans-serif;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+}
